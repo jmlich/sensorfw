@@ -71,7 +71,11 @@ int LocalSensorManagerInterface::errorCodeInt()
 QDBusReply<bool> LocalSensorManagerInterface::loadPlugin(const QString& name)
 {
     QList<QVariant> argumentList;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    argumentList << QVariant::fromValue(name);
+#else
     argumentList << qVariantFromValue(name);
+#endif
     QDBusPendingReply <bool> reply = asyncCallWithArgumentList(QLatin1String("loadPlugin"), argumentList);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
     connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
@@ -96,8 +100,13 @@ QDBusReply<int> LocalSensorManagerInterface::requestSensor(const QString& id)
 {
     qint64 pid = QCoreApplication::applicationPid();
     QList<QVariant> argumentList;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    argumentList << QVariant::fromValue(id);
+    argumentList << QVariant::fromValue(pid);
+#else
     argumentList << qVariantFromValue(id);
     argumentList << qVariantFromValue(pid);
+#endif
     QDBusPendingReply <int> reply = asyncCallWithArgumentList(QLatin1String("requestSensor"), argumentList);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
     connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
@@ -121,8 +130,13 @@ QDBusReply<bool> LocalSensorManagerInterface::releaseSensor(const QString& id, i
 {
     qint64 pid = QCoreApplication::applicationPid();
     QList<QVariant> argumentList;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    argumentList << QVariant::fromValue(id) << QVariant::fromValue(sessionId);
+    argumentList << QVariant::fromValue(pid);
+#else
     argumentList << qVariantFromValue(id) << qVariantFromValue(sessionId);
     argumentList << qVariantFromValue(pid);
+#endif
     QDBusPendingReply <bool> reply = asyncCallWithArgumentList(QLatin1String("releaseSensor"), argumentList);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
     connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),

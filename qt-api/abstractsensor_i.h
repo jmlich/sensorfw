@@ -527,7 +527,11 @@ T AbstractSensorChannelInterface::getAccessor(const char* name)
 template<typename T>
 void AbstractSensorChannelInterface::setAccessor(const char* name, const T& value)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QDBusReply<void> reply(call(QDBus::NoBlock, QLatin1String(name), QVariant::fromValue(value)));
+#else
     QDBusReply<void> reply(call(QDBus::NoBlock, QLatin1String(name), qVariantFromValue(value)));
+#endif
     if(!reply.isValid())
     {
         qDebug() << "Failed to set '" << name << " = " << value << "' to sensord: " << reply.error().message();
